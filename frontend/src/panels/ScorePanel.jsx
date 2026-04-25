@@ -29,6 +29,7 @@ function ScenarioDot({ state }) {
 export default function ScorePanel({
   totalPossibleAlerts,
   vigilAlertsFired,
+  silentActionsFired,
   scenarioIndex,
   scenarioId,
   counterFlash,
@@ -67,7 +68,7 @@ export default function ScorePanel({
       {/* Vigil counter */}
       <div className="flex-shrink-0">
         <div className="text-[9px] tracking-[0.2em] uppercase text-vigil-blue mb-1">
-          VIGIL
+          VIGIL ALERTS
         </div>
         <div
           className={`text-8xl font-light tabular-nums leading-none transition-all duration-500 ${
@@ -84,6 +85,24 @@ export default function ScorePanel({
           alerts actually fired
         </div>
       </div>
+
+      {/* Silent actions counter */}
+      <div className="flex-shrink-0">
+        <div className="text-[9px] tracking-[0.2em] uppercase text-green-400 mb-1">
+          SILENT ACTIONS
+        </div>
+        <div
+          className={`text-8xl font-light tabular-nums leading-none text-green-400 transition-all duration-500 ${
+            counterFlash.silent ? 'animate-flash-white' : ''
+          }`}
+        >
+          {silentActionsFired}
+        </div>
+        <div className="text-[10px] text-vigil-muted mt-1.5 leading-relaxed">
+          things handled without<br />interrupting you
+        </div>
+      </div>
+
 
       {/* Spacer */}
       <div className="flex-1" />

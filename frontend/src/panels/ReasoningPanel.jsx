@@ -8,6 +8,13 @@ function DecisionBadge({ decision }) {
       </span>
     )
   }
+  if (decision === 'ACT') {
+    return (
+      <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase bg-green-500/20 border border-green-500 text-green-400 rounded-sm">
+        ACTED
+      </span>
+    )
+  }
   return (
     <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 text-[9px] font-semibold tracking-widest uppercase border border-vigil-blue text-vigil-blue rounded-sm bg-black">
       VETOED
@@ -56,6 +63,18 @@ function DecisionRow({ entry, index }) {
           </div>
           <p className="text-sm text-vigil-amber leading-relaxed font-medium">
             "{entry.alert_message}"
+          </p>
+        </div>
+      )}
+
+      {/* Action taken card */}
+      {entry.action_taken && (entry.decision === 'ACT' || entry.decision === 'ALERT') && (
+        <div className="mx-3 mb-2 mt-1 p-3 border border-green-500/30 bg-green-500/5 rounded-sm">
+          <div className="text-[9px] tracking-widest uppercase text-green-400 mb-1.5 font-semibold">
+            {entry.decision === 'ALERT' ? 'EMERGENCY PROTOCOL — SILENT PRE-LOAD' : 'ACTED SILENTLY — USER NOT INTERRUPTED'}
+          </div>
+          <p className="text-sm text-green-400 leading-relaxed font-medium">
+            {entry.action_taken}
           </p>
         </div>
       )}

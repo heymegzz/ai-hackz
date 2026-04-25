@@ -52,7 +52,7 @@ SCENARIOS = [
             "battery": 92,
             "step_count": 203,
         },
-        "context_note": "Morning commute. Elevated stress baseline is expected on this route.",
+        "context_note": "Morning commute on unfamiliar route. Battery at 8%. Maps navigation active. User dependent on GPS — interruption has high cost.",
     },
     {
         "scenario_id": 4,
@@ -85,7 +85,7 @@ SCENARIOS = [
             "battery": 55,
             "step_count": 0,
         },
-        "context_note": "Dhikr session at home. Rhythmic low movement, elevated HR is expected and appears in 91% of recorded sessions.",
+        "context_note": "Dhikr session at home. Rhythmic low movement, elevated HR expected. Focus state — protection warranted.",
     },
     {
         "scenario_id": 6,

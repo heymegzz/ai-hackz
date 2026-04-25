@@ -22,6 +22,7 @@ export default function App() {
   // Counters
   const [totalPossibleAlerts, setTotalPossibleAlerts] = useState(0)
   const [vigilAlertsFired, setVigilAlertsFired] = useState(0)
+  const [silentActionsFired, setSilentActionsFired] = useState(0)
 
   // Scenario tracking
   const [scenarioIndex, setScenarioIndex] = useState(-1)   // 0-based
@@ -42,6 +43,8 @@ export default function App() {
   const esRef = useRef(null)
   const prevTotalRef = useRef(0)
   const prevVigilRef = useRef(0)
+  const prevSilentRef = useRef(0)
+  const lastSilentScenarioRef = useRef(null)
 
   const stopStream = useCallback(() => {
     if (esRef.current) {
@@ -75,6 +78,7 @@ export default function App() {
         profiler_state,
         decision,
         reason,
+        action_taken,
         alert_message,
         timestamp,
         scenario_id,
@@ -94,6 +98,7 @@ export default function App() {
         id: `${scenario_id}-${timestamp}-${Math.random()}`,
         decision,
         reason,
+        action_taken,
         alert_message,
         timestamp,
         scenario_id,
@@ -115,6 +120,14 @@ export default function App() {
         setTimeout(() => setCounterFlash(f => ({ ...f, vigil: false })), 700)
       }
       prevVigilRef.current = vigil_alerts_fired
+
+      // Silent actions counter
+      if (decision === 'ACT' && lastSilentScenarioRef.current !== scenario_id) {
+        setSilentActionsFired(s => s + 1)
+        lastSilentScenarioRef.current = scenario_id
+        setCounterFlash(f => ({ ...f, silent: true }))
+        setTimeout(() => setCounterFlash(f => ({ ...f, silent: false })), 700)
+      }
 
       setTotalPossibleAlerts(total_possible_alerts)
       setVigilAlertsFired(vigil_alerts_fired)
@@ -154,8 +167,10 @@ export default function App() {
     setAlertVisible(false)
     setAlertMessage('')
     setDemoDone(false)
+    setSilentActionsFired(0)
     prevTotalRef.current = 0
     prevVigilRef.current = 0
+    prevSilentRef.current = 0
 
     try {
       await fetch(`${BACKEND}/control/start`, { method: 'POST' })
@@ -183,8 +198,11 @@ export default function App() {
     setDemoDone(false)
     setDemoRunning(false)
     setThinking(false)
+    setSilentActionsFired(0)
     prevTotalRef.current = 0
     prevVigilRef.current = 0
+    prevSilentRef.current = 0
+    lastSilentScenarioRef.current = null
   }, [stopStream])
 
   // Cleanup on unmount
@@ -246,6 +264,7 @@ export default function App() {
           <ScorePanel
             totalPossibleAlerts={totalPossibleAlerts}
             vigilAlertsFired={vigilAlertsFired}
+            silentActionsFired={silentActionsFired}
             scenarioIndex={scenarioIndex}
             scenarioId={scenarioId}
             counterFlash={counterFlash}

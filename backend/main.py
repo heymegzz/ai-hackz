@@ -150,6 +150,7 @@ async def event_generator() -> AsyncGenerator[str, None]:
                 "scenario_id": sid,
                 "decision": decision,
                 "reason": reason,
+                "action_taken": action_result.get("action_taken", None),
                 "alert_message": alert_message,
                 "timestamp": datetime.now().strftime("%H:%M:%S"),
             }
@@ -163,6 +164,7 @@ async def event_generator() -> AsyncGenerator[str, None]:
                 "profiler_state": profiler_state,
                 "decision": decision,
                 "reason": reason,
+                "action_taken": entry["action_taken"],
                 "alert_message": alert_message,
                 "timestamp": entry["timestamp"],
                 "scenario_id": sid,
