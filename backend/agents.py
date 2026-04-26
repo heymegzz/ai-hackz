@@ -12,7 +12,7 @@ from groq import Groq
 
 logger = logging.getLogger(__name__)
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY") or "gsk_dummy_key_for_demo"
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 MODEL = "llama-3.3-70b-versatile"
 
 client = Groq(api_key=GROQ_API_KEY)
@@ -227,15 +227,17 @@ def call_action_agent(packet: dict, profiler_state: str, history: list[dict]) ->
 
         result = json.loads(raw)
 
-        # Demo reliability: scenarios 3, 5, and 8 MUST follow fallbacks
-        if scenario_id in (3, 5, 8):
-            logger.info(f"Using guaranteed fallback for scenario {scenario_id}")
-            # Ensure action_taken is included from fallback
-            return fallback
-
         # Validate required keys
         if "decision" not in result or result["decision"] not in ("VETO", "ACT", "ALERT"):
             raise ValueError("Invalid decision value")
+
+        # Ensure alert_message exists when decision is ALERT
+        if result["decision"] == "ALERT" and not result.get("alert_message"):
+            result["alert_message"] = fallback.get("alert_message")
+
+        # Ensure action_taken exists when decision is ACT
+        if result["decision"] == "ACT" and not result.get("action_taken"):
+            result["action_taken"] = fallback.get("action_taken")
 
         return result
 
